@@ -134,7 +134,6 @@ module SerializationHelper
     def self.convert_timestamps(records, columns)
       records.each do |record|
         columns.each do |column|
-          puts "Value: "  + record[column]
           record[column] = convert_timestamp(record[column])
         end
       end

@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'yaml'
+require 'psych'
 require 'active_record'
 require 'serialization_helper'
 require 'active_support/core_ext/kernel/reporting'
