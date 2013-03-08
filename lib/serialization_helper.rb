@@ -140,10 +140,10 @@ module SerializationHelper
     end
 
     def self.convert_timestamp(value)
-      unless value.nil?
-        lastIndexOfDot = value.rindex(".")
-        return value[0..lastIndexOfDot]
-      end
+      #unless value.nil?
+      #  lastIndexOfDot = value.rindex(".")
+      #  return value[0..lastIndexOfDot]
+      #end
 
       value
     end
