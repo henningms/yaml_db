@@ -142,7 +142,8 @@ module SerializationHelper
     def self.convert_timestamp(value)
       unless value.nil?
         if value.length > 23
-          return value[0..-4]
+          lengthToCut = 23 - value.length
+          return value[0..lengthToCut]
         end
       end
 
