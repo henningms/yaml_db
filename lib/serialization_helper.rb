@@ -141,6 +141,7 @@ module SerializationHelper
 
     def self.convert_timestamp(value)
       unless value.nil?
+        puts value + "\n"
         return value[0..-4]
       end
 
