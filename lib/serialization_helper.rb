@@ -134,6 +134,7 @@ module SerializationHelper
     def self.convert_timestamps(records, columns)
       records.each do |record|
         columns.each do |column|
+          puts "Value: "  + record[column]
           record[column] = convert_timestamp(record[column])
         end
       end
@@ -148,7 +149,7 @@ module SerializationHelper
     end
 
     def self.timestamp_columns(table)
-      cc = ActiveRecord::Base.connection.columns(table).each {|c| puts "#{c.name} - #{c.type}"}
+      #cc = ActiveRecord::Base.connection.columns(table).each {|c| puts "#{c.name} - #{c.type}"}
       columns = ActiveRecord::Base.connection.columns(table).reject {|c| silence_warnings { c.type != :datetime}}
       columns.map { |c| c.name}
     end
