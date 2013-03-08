@@ -101,7 +101,7 @@ module SerializationHelper
   module Utils
 
     def self.unhash(hash, keys)
-      keys.map { |key| hash[key] }
+      keys.map { |key| hash[key]}
     end
 
     def self.unhash_records(records, keys)
@@ -129,6 +129,28 @@ module SerializationHelper
     def self.boolean_columns(table)
       columns = ActiveRecord::Base.connection.columns(table).reject { |c| silence_warnings { c.type != :boolean } }
       columns.map { |c| c.name }
+    end
+
+    def self.convert_timestamps(records, columns)
+      records.each do |record|
+        columns.each do |column|
+          record[column] = convert_timestamp(record[column])
+        end
+      end
+    end
+
+    def self.convert_timestamp(value)
+      unless value.nil?
+        return value[0..-4]
+      end
+
+      value
+    end
+
+    def self.timestamp_columns(table)
+      cc = ActiveRecord::Base.connection.columns(table).each {|c| puts "#{c.name} - #{c.type}"}
+      columns = ActiveRecord::Base.connection.columns(table).reject {|c| silence_warnings { c.type != :datetime}}
+      columns.map { |c| c.name}
     end
 
     def self.is_boolean(value)
@@ -176,7 +198,9 @@ module SerializationHelper
     end
 
     def self.table_column_names(table)
-      ActiveRecord::Base.connection.columns(table).map { |c| c.name }
+      cols = ActiveRecord::Base.connection.columns(table).map do |c|
+        c.name
+      end
     end
 
 
@@ -186,11 +210,13 @@ module SerializationHelper
       id = table_column_names(table).first
       boolean_columns = SerializationHelper::Utils.boolean_columns(table)
       quoted_table_name = SerializationHelper::Utils.quote_table(table)
+      timestamp_columns = SerializationHelper::Utils.timestamp_columns(table)
 
       (0..pages).to_a.each do |page|
         query = Arel::Table.new(table).order(id).skip(records_per_page*page).take(records_per_page).project(Arel.sql('*'))
         records = ActiveRecord::Base.connection.select_all(query.to_sql)
         records = SerializationHelper::Utils.convert_booleans(records, boolean_columns)
+        records = SerializationHelper::Utils.convert_timestamps(records, timestamp_columns)
         yield records
       end
     end
